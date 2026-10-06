@@ -26,11 +26,18 @@
         <h2>⚙️ Pengaturan Display Masjid</h2>
         <a href="index.html" target="_blank">👉 Lihat Display</a>
 
-        <h3>Info Masjid</h3>
+        <h3>Info Masjid & Background</h3>
         <label>Nama Masjid:</label>
         <input type="text" id="setMosqueName">
         <label>Alamat:</label>
         <input type="text" id="setMosqueAddress">
+        
+        <label>URL Wallpaper (Kosongkan jika ingin pakai Warna Solid di bawah):</label>
+        <input type="text" id="setBackgroundUrl" placeholder="https://.../bg.jpg">
+        <div class="color-box" style="margin-top: 10px;">
+            <label>Warna Background Solid (Pilih warna gelap)</label>
+            <input type="color" id="cMainBg" value="#111111">
+        </div>
 
         <h3>Media</h3>
         <label>Tipe Media:</label>
@@ -95,6 +102,7 @@
             const data = JSON.parse(localStorage.getItem('masjidSettings')) || {};
             document.getElementById('setMosqueName').value = data.mosqueName || 'Masjid Raya Al-Muhajirin';
             document.getElementById('setMosqueAddress').value = data.mosqueAddress || 'Jl. Contoh Alamat No. 123';
+            document.getElementById('setBackgroundUrl').value = data.backgroundUrl || '';
             document.getElementById('setMediaType').value = data.mediaType || 'youtube';
             document.getElementById('setYoutubeLink').value = data.youtubeLink || '';
             document.getElementById('setSlides').value = data.slides || '';
@@ -112,6 +120,7 @@
             document.getElementById('tIsya').value = pt.isya || '19:00';
 
             const c = data.colors || {};
+            document.getElementById('cMainBg').value = c.mainBg || '#111111'; // WARNA BG UTAMA
             document.getElementById('cHeaderBg').value = c.headerBg || '#1e3c72';
             document.getElementById('cHeaderText').value = c.headerText || '#ffffff';
             document.getElementById('cImsakBg').value = c.imsakBg || '#0f2027';
@@ -132,6 +141,7 @@
             const data = {
                 mosqueName: document.getElementById('setMosqueName').value,
                 mosqueAddress: document.getElementById('setMosqueAddress').value,
+                backgroundUrl: document.getElementById('setBackgroundUrl').value,
                 mediaType: document.getElementById('setMediaType').value,
                 youtubeLink: document.getElementById('setYoutubeLink').value,
                 slides: document.getElementById('setSlides').value,
@@ -148,6 +158,7 @@
                     isya: document.getElementById('tIsya').value
                 },
                 colors: {
+                    mainBg: document.getElementById('cMainBg').value, // SIMPAN WARNA BG UTAMA
                     headerBg: document.getElementById('cHeaderBg').value,
                     headerText: document.getElementById('cHeaderText').value,
                     imsakBg: document.getElementById('cImsakBg').value,
