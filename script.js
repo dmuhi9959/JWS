@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function loadDisplay() {
     const data = JSON.parse(localStorage.getItem('masjidSettings')) || defaultSettings();
+    const c = data.colors;
     
     // Update Teks
     document.getElementById('mosqueName').innerText = data.mosqueName;
@@ -16,29 +17,42 @@ function loadDisplay() {
     document.getElementById('runningText1').innerHTML = '<span>' + data.text1 + '</span>';
     document.getElementById('runningText2').innerHTML = '<span>' + data.text2 + '</span>';
 
-    // Update Colors
-    document.documentElement.style.setProperty('--header-bg', data.colors.headerBg);
-    document.documentElement.style.setProperty('--header-text', data.colors.headerText);
-    document.getElementById('header').style.background = data.colors.headerBg;
-    document.getElementById('header').style.color = data.colors.headerText;
+    // Update Warna Header
+    document.getElementById('header').style.background = c.headerBg;
+    document.getElementById('header').style.color = c.headerText;
 
-    document.querySelector('.left-panel').style.background = data.colors.leftBg;
-    document.querySelector('.left-panel').style.color = data.colors.leftText;
+    // Update Warna Jam
+    document.getElementById('clock').style.background = c.clockBg;
+    document.getElementById('clock').style.color = c.leftText;
 
-    document.querySelector('footer').style.background = data.colors.footerBg;
-    document.querySelector('footer').style.color = data.colors.footerText;
+    // Update Warna Running Text
+    document.getElementById('runningText1Block').style.background = c.text1Bg;
+    document.getElementById('runningText1').style.color = c.text1Color;
+    document.getElementById('runningText2Block').style.background = c.text2Bg;
+    document.getElementById('runningText2').style.color = c.text2Color;
 
-    // Update Prayer Times
+    // Update Prayer Times (Blok Terpisah)
     const pt = data.prayerTimes;
-    const ptHtml = `
-        <div class="prayer-row" id="rImsak"><span>Imsak</span><span>${pt.imsak}</span></div>
-        <div class="prayer-row" id="rSubuh"><span>Subuh</span><span>${pt.subuh}</span></div>
-        <div class="prayer-row" id="rDzuhur"><span>Dzuhur</span><span>${pt.dzuhur}</span></div>
-        <div class="prayer-row" id="rAshar"><span>Ashar</span><span>${pt.ashar}</span></div>
-        <div class="prayer-row" id="rMaghrib"><span>Maghrib</span><span>${pt.maghrib}</span></div>
-        <div class="prayer-row" id="rIsya"><span>Isya</span><span>${pt.isya}</span></div>
+    document.getElementById('prayerTimes').innerHTML = `
+        <div class="prayer-block" style="background:${c.imsakBg}; color:${c.leftText}">
+            <span>Imsak</span><span>${pt.imsak}</span>
+        </div>
+        <div class="prayer-block" style="background:${c.subuhBg}; color:${c.leftText}">
+            <span>Subuh</span><span>${pt.subuh}</span>
+        </div>
+        <div class="prayer-block" style="background:${c.dzuhurBg}; color:${c.leftText}">
+            <span>Dzuhur</span><span>${pt.dzuhur}</span>
+        </div>
+        <div class="prayer-block" style="background:${c.asharBg}; color:${c.leftText}">
+            <span>Ashar</span><span>${pt.ashar}</span>
+        </div>
+        <div class="prayer-block" style="background:${c.maghribBg}; color:${c.leftText}">
+            <span>Maghrib</span><span>${pt.maghrib}</span>
+        </div>
+        <div class="prayer-block" style="background:${c.isyaBg}; color:${c.leftText}">
+            <span>Isya</span><span>${pt.isya}</span>
+        </div>
     `;
-    document.getElementById('prayerTimes').innerHTML = ptHtml;
 
     // Update Media
     const container = document.getElementById('mediaContainer');
@@ -54,14 +68,13 @@ function loadDisplay() {
 
 function startSlideshow(images) {
     const container = document.getElementById('mediaContainer');
-    
     function showNext() {
         container.innerHTML = `<img src="${images[slideIndex]}" alt="Slideshow">`;
         slideIndex = (slideIndex + 1) % images.length;
     }
     showNext();
     clearInterval(slideInterval);
-    slideInterval = setInterval(showNext, 5000); // Ganti tiap 5 detik
+    slideInterval = setInterval(showNext, 5000);
 }
 
 function updateClock() {
@@ -74,12 +87,10 @@ function updateClock() {
 
 function updateDate() {
     const now = new Date();
-    // Tanggal Masehi
     const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
     const gregText = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
     
-    // Tanggal Hijriyah (Menggunakan API default browser Intl)
     try {
         const hijriFormatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic', { day: 'numeric', month: 'long', year: 'numeric' });
         const hijriText = hijriFormatter.format(now) + " H";
@@ -87,7 +98,6 @@ function updateDate() {
     } catch(e) {
         document.getElementById('hijriDate').innerText = "";
     }
-    
     document.getElementById('gregDate').innerText = gregText;
 }
 
@@ -96,11 +106,17 @@ function defaultSettings() {
         mosqueName: "Masjid Raya Al-Muhajirin",
         mosqueAddress: "Banten",
         mediaType: "youtube",
-        youtubeId: "C8kOruMftPo", // Video masjid/streaming bawaan
+        youtubeId: "C8kOruMftPo",
         slides: "",
         text1: "Selamat datang di masjid kami.",
         text2: "Jadwal kajian setiap ba'da maghrib.",
         prayerTimes: { imsak:"04:00", subuh:"04:15", dzuhur:"12:00", ashar:"15:00", maghrib:"18:00", isya:"19:00" },
-        colors: { headerBg:"#1e3c72", headerText:"#ffffff", leftBg:"#2a5298", leftText:"#ffffff", footerBg:"#000000", footerText:"#ffd700" }
+        colors: {
+            headerBg:"#1e3c72", headerText:"#ffffff", 
+            clockBg:"#2a5298", leftText:"#ffffff",
+            imsakBg:"#0f2027", subuhBg:"#203a43", dzuhurBg:"#2c5364", asharBg:"#0f9b0f", maghribBg:"#8e2de2", isyaBg:"#4b6cb7",
+            text1Bg:"#000000", text1Color:"#ffd700", 
+            text2Bg:"#1a1a1a", text2Color:"#ffffff"
+        }
     };
 }
