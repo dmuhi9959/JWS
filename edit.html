@@ -5,19 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengaturan Display</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input[type="text"], input[type="time"], input[type="color"], select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
-        .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { margin-top: 20px; padding: 10px 15px; background: #1e3c72; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 1.1em; }
-        hr { margin: 20px 0; border: 0; border-top: 1px solid #ddd; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1e3c72, #2a5298); margin: 0; padding: 40px 10px; color: #333; }
+        .container { max-width: 700px; margin: auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        h2, h3 { color: #1e3c72; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 25px; }
+        h2:first-child { margin-top: 0; }
+        label { display: block; margin-top: 12px; font-weight: bold; color: #555; }
+        input[type="text"], input[type="time"], input[type="number"], select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; box-sizing: border-box; transition: 0.2s; }
+        input:focus, select:focus { border-color: #2a5298; box-shadow: 0 0 5px rgba(42,82,152,0.3); outline: none; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .color-box { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 8px 12px; border-radius: 6px; border: 1px solid #eee; }
+        .color-box input[type="color"] { width: 50px; height: 35px; border: none; cursor: pointer; background: none; }
+        button { width: 100%; padding: 15px; background: #28a745; color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 30px; transition: 0.2s; }
+        button:hover { background: #218838; }
+        .note { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 0.9em; text-align: center; }
+        a { display: inline-block; margin-bottom: 20px; color: #2a5298; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Pengaturan Display Masjid</h2>
-        <a href="index.html" target="_blank">Lihat Display</a>
+        <h2>⚙️ Pengaturan Display Masjid</h2>
+        <a href="index.html" target="_blank">👉 Lihat Display</a>
 
         <h3>Info Masjid</h3>
         <label>Nama Masjid:</label>
@@ -25,54 +32,59 @@
         <label>Alamat:</label>
         <input type="text" id="setMosqueAddress">
 
-        <h3>Media (Video/Gambar)</h3>
+        <h3>Media</h3>
         <label>Tipe Media:</label>
         <select id="setMediaType">
-            <option value="youtube">YouTube</option>
+            <option value="youtube">YouTube (Bersuara)</option>
             <option value="slideshow">Slideshow Gambar</option>
         </select>
-        <!-- PERUBAYAN DI SINI: Menerima Link Full -->
-        <label>Link Video YouTube (Contoh: https://www.youtube.com/watch?v=xxxxx):</label>
-        <input type="text" id="setYoutubeLink" placeholder="Masukkan link YouTube">
-        <label>URL Gambar Slideshow (Pisahkan dengan koma, maks 5):</label>
+        <label>Link Video YouTube:</label>
+        <input type="text" id="setYoutubeLink" placeholder="https://www.youtube.com/watch?v=...">
+        <label>URL Gambar Slideshow (Pisah koma, maks 5):</label>
         <input type="text" id="setSlides" placeholder="https://.../1.jpg, https://.../2.jpg">
 
-        <h3>Teks Berjalan (Running Text)</h3>
+        <h3>Audio & Tartil</h3>
+        <div class="note">Pastikan file <b>adzan.mp3</b> dan <b>tartil.mp3</b> sudah di-upload ke repository GitHub Anda.</div>
+        <label>Putar Tartil X Menit Sebelum Adzan:</label>
+        <input type="number" id="setTartilMin" value="5" min="1" max="15">
+
+        <h3>Running Text</h3>
         <label>Teks 1:</label>
         <input type="text" id="setText1">
         <label>Teks 2:</label>
         <input type="text" id="setText2">
 
         <h3>Waktu Sholat</h3>
-        <div class="color-grid">
+        <div class="grid-2">
             <div><label>Imsak</label><input type="time" id="tImsak"></div>
             <div><label>Subuh</label><input type="time" id="tSubuh"></div>
+            <div><label>Terbit</label><input type="time" id="tTerbit"></div>
             <div><label>Dzuhur</label><input type="time" id="tDzuhur"></div>
             <div><label>Ashar</label><input type="time" id="tAshar"></div>
             <div><label>Maghrib</label><input type="time" id="tMaghrib"></div>
             <div><label>Isya</label><input type="time" id="tIsya"></div>
         </div>
 
-        <h3>Pengaturan Warna Background (Per Blok)</h3>
-        <div class="color-grid">
-            <div><label>Blok Nama Masjid (BG)</label><input type="color" id="cHeaderBg" value="#1e3c72"></div>
-            <div><label>Blok Jam (BG)</label><input type="color" id="cClockBg" value="#2a5298"></div>
-            <div><label>Blok Imsak (BG)</label><input type="color" id="cImsakBg" value="#0f2027"></div>
-            <div><label>Blok Subuh (BG)</label><input type="color" id="cSubuhBg" value="#203a43"></div>
-            <div><label>Blok Dzuhur (BG)</label><input type="color" id="cDzuhurBg" value="#2c5364"></div>
-            <div><label>Blok Ashar (BG)</label><input type="color" id="cAsharBg" value="#0f9b0f"></div>
-            <div><label>Blok Maghrib (BG)</label><input type="color" id="cMaghribBg" value="#8e2de2"></div>
-            <div><label>Blok Isya (BG)</label><input type="color" id="cIsyaBg" value="#4b6cb7"></div>
-            <div><label>Blok Running Text 1 (BG)</label><input type="color" id="cText1Bg" value="#000000"></div>
-            <div><label>Blok Running Text 2 (BG)</label><input type="color" id="cText2Bg" value="#1a1a1a"></div>
+        <h3>Warna Background (Per Blok)</h3>
+        <div class="grid-2">
+            <div class="color-box"><label>Blok Nama Masjid</label><input type="color" id="cHeaderBg" value="#1e3c72"></div>
+            <div class="color-box"><label>Blok Imsak</label><input type="color" id="cImsakBg" value="#0f2027"></div>
+            <div class="color-box"><label>Blok Subuh</label><input type="color" id="cSubuhBg" value="#203a43"></div>
+            <div class="color-box"><label>Blok Terbit</label><input type="color" id="cTerbitBg" value="#2c5364"></div>
+            <div class="color-box"><label>Blok Dzuhur</label><input type="color" id="cDzuhurBg" value="#0f9b0f"></div>
+            <div class="color-box"><label>Blok Ashar</label><input type="color" id="cAsharBg" value="#8e2de2"></div>
+            <div class="color-box"><label>Blok Maghrib</label><input type="color" id="cMaghribBg" value="#4b6cb7"></div>
+            <div class="color-box"><label>Blok Isya</label><input type="color" id="cIsyaBg" value="#e65c00"></div>
+            <div class="color-box"><label>Blok Running Text 1</label><input type="color" id="cText1Bg" value="#000000"></div>
+            <div class="color-box"><label>Blok Running Text 2</label><input type="color" id="cText2Bg" value="#1a1a1a"></div>
         </div>
 
-        <h3>Pengaturan Warna Huruf (Text)</h3>
-        <div class="color-grid">
-            <div><label>Huruf Nama Masjid</label><input type="color" id="cHeaderText" value="#ffffff"></div>
-            <div><label>Huruf Jam & Waktu Sholat</label><input type="color" id="cLeftText" value="#ffffff"></div>
-            <div><label>Huruf Running Text 1</label><input type="color" id="cText1Color" value="#ffd700"></div>
-            <div><label>Huruf Running Text 2</label><input type="color" id="cText2Color" value="#ffffff"></div>
+        <h3>Warna Huruf (Text)</h3>
+        <div class="grid-2">
+            <div class="color-box"><label>Huruf Nama Masjid</label><input type="color" id="cHeaderText" value="#ffffff"></div>
+            <div class="color-box"><label>Huruf Waktu Sholat</label><input type="color" id="cLeftText" value="#ffffff"></div>
+            <div class="color-box"><label>Huruf Text 1</label><input type="color" id="cText1Color" value="#ffd700"></div>
+            <div class="color-box"><label>Huruf Text 2</label><input type="color" id="cText2Color" value="#ffffff"></div>
         </div>
 
         <button onclick="saveSettings()">SIMPAN PENGATURAN</button>
@@ -84,14 +96,16 @@
             document.getElementById('setMosqueName').value = data.mosqueName || 'Masjid Raya Al-Muhajirin';
             document.getElementById('setMosqueAddress').value = data.mosqueAddress || 'Jl. Contoh Alamat No. 123';
             document.getElementById('setMediaType').value = data.mediaType || 'youtube';
-            document.getElementById('setYoutubeLink').value = data.youtubeLink || ''; // Diubah ke Link
+            document.getElementById('setYoutubeLink').value = data.youtubeLink || '';
             document.getElementById('setSlides').value = data.slides || '';
             document.getElementById('setText1').value = data.text1 || 'Selamat datang di Masjid kami.';
             document.getElementById('setText2').value = data.text2 || 'Pengumuman: Majelis Ta\'lim ba\'da Maghrib.';
+            document.getElementById('setTartilMin').value = data.tartilMinutes || 5;
 
             const pt = data.prayerTimes || {};
             document.getElementById('tImsak').value = pt.imsak || '04:00';
             document.getElementById('tSubuh').value = pt.subuh || '04:15';
+            document.getElementById('tTerbit').value = pt.terbit || '05:30';
             document.getElementById('tDzuhur').value = pt.dzuhur || '12:00';
             document.getElementById('tAshar').value = pt.ashar || '15:00';
             document.getElementById('tMaghrib').value = pt.maghrib || '18:00';
@@ -100,13 +114,13 @@
             const c = data.colors || {};
             document.getElementById('cHeaderBg').value = c.headerBg || '#1e3c72';
             document.getElementById('cHeaderText').value = c.headerText || '#ffffff';
-            document.getElementById('cClockBg').value = c.clockBg || '#2a5298';
             document.getElementById('cImsakBg').value = c.imsakBg || '#0f2027';
             document.getElementById('cSubuhBg').value = c.subuhBg || '#203a43';
-            document.getElementById('cDzuhurBg').value = c.dzuhurBg || '#2c5364';
-            document.getElementById('cAsharBg').value = c.asharBg || '#0f9b0f';
-            document.getElementById('cMaghribBg').value = c.maghribBg || '#8e2de2';
-            document.getElementById('cIsyaBg').value = c.isyaBg || '#4b6cb7';
+            document.getElementById('cTerbitBg').value = c.terbitBg || '#2c5364';
+            document.getElementById('cDzuhurBg').value = c.dzuhurBg || '#0f9b0f';
+            document.getElementById('cAsharBg').value = c.asharBg || '#8e2de2';
+            document.getElementById('cMaghribBg').value = c.maghribBg || '#4b6cb7';
+            document.getElementById('cIsyaBg').value = c.isyaBg || '#e65c00';
             document.getElementById('cText1Bg').value = c.text1Bg || '#000000';
             document.getElementById('cText1Color').value = c.text1Color || '#ffd700';
             document.getElementById('cText2Bg').value = c.text2Bg || '#1a1a1a';
@@ -119,13 +133,15 @@
                 mosqueName: document.getElementById('setMosqueName').value,
                 mosqueAddress: document.getElementById('setMosqueAddress').value,
                 mediaType: document.getElementById('setMediaType').value,
-                youtubeLink: document.getElementById('setYoutubeLink').value, // Simpan Link
+                youtubeLink: document.getElementById('setYoutubeLink').value,
                 slides: document.getElementById('setSlides').value,
                 text1: document.getElementById('setText1').value,
                 text2: document.getElementById('setText2').value,
+                tartilMinutes: document.getElementById('setTartilMin').value,
                 prayerTimes: {
                     imsak: document.getElementById('tImsak').value,
                     subuh: document.getElementById('tSubuh').value,
+                    terbit: document.getElementById('tTerbit').value,
                     dzuhur: document.getElementById('tDzuhur').value,
                     ashar: document.getElementById('tAshar').value,
                     maghrib: document.getElementById('tMaghrib').value,
@@ -134,9 +150,9 @@
                 colors: {
                     headerBg: document.getElementById('cHeaderBg').value,
                     headerText: document.getElementById('cHeaderText').value,
-                    clockBg: document.getElementById('cClockBg').value,
                     imsakBg: document.getElementById('cImsakBg').value,
                     subuhBg: document.getElementById('cSubuhBg').value,
+                    terbitBg: document.getElementById('cTerbitBg').value,
                     dzuhurBg: document.getElementById('cDzuhurBg').value,
                     asharBg: document.getElementById('cAsharBg').value,
                     maghribBg: document.getElementById('cMaghribBg').value,
