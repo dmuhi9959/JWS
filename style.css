@@ -15,12 +15,12 @@ body {
     background-attachment: fixed;
 }
 
-/* HAPUS LAYER GELAP PEKAT, ganti dengan layer tipis agar teks terbaca */
+/* LAYER GELAP BACKGROUND */
 body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.4); /* Hanya 40% gelap, wallpaper akan terlihat */
+    background: rgba(0, 0, 0, 0.4); 
     z-index: 0;
     pointer-events: none;
 }
@@ -32,35 +32,35 @@ header, main, footer, #audioUnlock {
 }
 
 /* Tombol Unlock */
-#audioUnlock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; font-size: 1.8em; color: #fff; cursor: pointer; text-align: center; padding: 20px;}
+#audioUnlock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; font-size: 1.5em; color: #fff; cursor: pointer; text-align: center; padding: 20px;}
 
 /* Header */
-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; flex-shrink: 0; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 1.5vmin 3vmin; flex-shrink: 0; }
 .header-left, .header-right { flex: 1; }
 .header-left { text-align: left; }
-.header-left #clock { font-size: 3em; font-weight: bold; }
+.header-left #clock { font-size: 5vmin; font-weight: bold; }
 .header-center { flex: 2; text-align: center; }
-.header-right { text-align: right; font-size: 1.2em; line-height: 1.4; }
-.header-center h1 { font-size: 2.5em; font-weight: bold; }
-.header-center p { font-size: 1.2em; opacity: 0.9; }
+.header-right { text-align: right; font-size: 2vmin; line-height: 1.4; }
+.header-center h1 { font-size: 4.5vmin; font-weight: bold; }
+.header-center p { font-size: 2.5vmin; opacity: 0.9; }
 
 /* Main */
-main { flex: 1; display: flex; padding: 10px 30px; gap: 20px; min-height: 0; overflow: hidden; }
-.left-panel { width: 25%; display: flex; flex-direction: column; gap: 10px; height: 100%; }
+main { flex: 1; display: flex; padding: 1.5vmin 3vmin; gap: 2vmin; min-height: 0; overflow: hidden; }
+.left-panel { width: 25%; display: flex; flex-direction: column; gap: 1vmin; height: 100%; }
 
 /* Blok Waktu Sholat */
-.prayer-container { display: flex; flex-direction: column; gap: 8px; flex: 1; justify-content: space-between; overflow: hidden; }
-.prayer-block { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; border-radius: 8px; font-size: 1.2em; font-weight: bold; flex: 1; }
+.prayer-container { display: flex; flex-direction: column; gap: 1vmin; flex: 1; justify-content: space-between; overflow: hidden; }
+.prayer-block { display: flex; justify-content: space-between; align-items: center; padding: 1vmin 1.5vmin; border-radius: 0.8vmin; font-size: 2.5vmin; font-weight: bold; flex: 1; }
 
 /* Video */
 .center-panel { flex: 1; display: flex; justify-content: center; align-items: center; height: 100%; }
-.media-container { width: 80%; height: 90%; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); background: #000; z-index: 1; }
+.media-container { width: 80%; height: 95%; border-radius: 1.5vmin; overflow: hidden; box-shadow: 0 1vmin 3vmin rgba(0,0,0,0.8); background: #000; z-index: 1; }
 .media-container iframe, .media-container img { width: 100%; height: 100%; object-fit: cover; }
 
 /* Footer */
-footer { padding: 0 30px 15px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
-.running-block { border-radius: 8px; overflow: hidden; padding: 8px 0; }
-.running-text { font-size: 1.3em; white-space: nowrap; overflow: hidden; }
+footer { padding: 0 3vmin 1.5vmin; display: flex; flex-direction: column; gap: 1vmin; flex-shrink: 0; }
+.running-block { border-radius: 0.8vmin; overflow: hidden; padding: 1vmin 0; }
+.running-text { font-size: 2.5vmin; white-space: nowrap; overflow: hidden; }
 .running-text span { display: inline-block; animation: marquee 25s linear infinite; padding-left: 100%; }
 
 @keyframes marquee {
