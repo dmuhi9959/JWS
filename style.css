@@ -1,18 +1,41 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background: #111; color: white; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
 
-/* Tombol Unlock Suara */
-#audioUnlock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; font-size: 2em; color: #fff; cursor: pointer; text-align: center; padding: 20px;}
+/* FIX MOBILE: Pakai 100dvh agar pas di browser HP */
+html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+body { 
+    height: 100vh; /* Fallback */
+    height: 100dvh; /* Dynamic Viewport Height untuk HP */
+    background-color: #111; 
+    color: white; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+}
 
-/* Header (3 Kolom) */
+/* Layer Gelap */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: -1;
+}
+
+/* Tombol Unlock */
+#audioUnlock { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; font-size: 1.8em; color: #fff; cursor: pointer; text-align: center; padding: 20px;}
+
+/* Header */
 header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; flex-shrink: 0; }
 .header-left, .header-right { flex: 1; }
-.header-left { text-align: left; font-size: 1.2em; line-height: 1.4; }
+.header-left { text-align: left; }
+.header-left #clock { font-size: 3em; font-weight: bold; }
 .header-center { flex: 2; text-align: center; }
-.header-right { text-align: right; }
+.header-right { text-align: right; font-size: 1.2em; line-height: 1.4; }
 .header-center h1 { font-size: 2.5em; font-weight: bold; }
 .header-center p { font-size: 1.2em; opacity: 0.9; }
-.header-right #clock { font-size: 3em; font-weight: bold; }
 
 /* Main */
 main { flex: 1; display: flex; padding: 10px 30px; gap: 20px; min-height: 0; overflow: hidden; }
@@ -22,7 +45,7 @@ main { flex: 1; display: flex; padding: 10px 30px; gap: 20px; min-height: 0; ove
 .prayer-container { display: flex; flex-direction: column; gap: 8px; flex: 1; justify-content: space-between; overflow: hidden; }
 .prayer-block { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; border-radius: 8px; font-size: 1.2em; font-weight: bold; flex: 1; }
 
-/* Video (Tidak Full) */
+/* Video */
 .center-panel { flex: 1; display: flex; justify-content: center; align-items: center; height: 100%; }
 .media-container { width: 80%; height: 90%; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 .media-container iframe, .media-container img { width: 100%; height: 100%; object-fit: cover; }
