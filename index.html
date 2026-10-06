@@ -2,50 +2,41 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta tag berikut mencegah zoom dan membuat pas di HP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Display Masjid</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Tombol Unlock Suara (Hilang setelah diklik) -->
-    <div id="audioUnlock" onclick="unlockAudio()">🔊 Klik Layar Untuk Mengaktifkan Suara Adzan & Video</div>
+    <!-- Tombol Unlock Suara & Fullscreen -->
+    <div id="audioUnlock" onclick="unlockAudio()">🔊 Klik Di Sini Untuk Fullscreen, Landscape & Mengaktifkan Suara</div>
 
     <!-- Header -->
     <header id="header">
-        <!-- Kiri: Tanggal -->
         <div class="header-left">
-            <div id="hijriDate"></div>
-            <div id="gregDate"></div>
+            <div id="clock">00:00:00</div>
         </div>
-        <!-- Tengah: Nama Masjid -->
         <div class="header-center">
             <h1 id="mosqueName">Masjid Raya Al-Muhajirin</h1>
             <p id="mosqueAddress">Jl. Contoh Alamat No. 123, Banten</p>
         </div>
-        <!-- Kanan: Jam Digital -->
         <div class="header-right">
-            <div id="clock">00:00:00</div>
+            <div id="hijriDate"></div>
+            <div id="gregDate"></div>
         </div>
     </header>
 
     <!-- Main Content -->
     <main>
-        <!-- Left Side: Prayer Times -->
         <aside class="left-panel">
-            <div class="prayer-container" id="prayerTimes">
-                <!-- Diisi via JS -->
-            </div>
+            <div class="prayer-container" id="prayerTimes"></div>
         </aside>
-
-        <!-- Center: Video/Slideshow -->
         <section class="center-panel">
-            <div id="mediaContainer" class="media-container">
-                <!-- Diisi via JS -->
-            </div>
+            <div id="mediaContainer" class="media-container"></div>
         </section>
     </main>
 
-    <!-- Footer: Running Text (Blok Terpisah) -->
+    <!-- Footer -->
     <footer>
         <div class="running-block" id="runningText1Block">
             <div class="running-text" id="runningText1"><span>Selamat datang di Masjid kami.</span></div>
@@ -55,7 +46,6 @@
         </div>
     </footer>
 
-    <!-- Audio Elements -->
     <audio id="audioPlayer" src=""></audio>
 
     <script src="script.js"></script>
