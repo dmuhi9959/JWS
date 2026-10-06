@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Masjid</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="header-left">
+            <h1 id="mosqueName">Masjid Raya Al-Muhajirin</h1>
+            <p id="mosqueAddress">Jl. Contoh Alamat No. 123, Banten</p>
+        </div>
+        <div class="header-right">
+            <div id="hijriDate"></div>
+            <div id="gregDate"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Left Side: Clock & Prayer Times -->
+        <aside class="left-panel">
+            <div id="clock" class="clock">00:00:00</div>
+            <div class="prayer-times" id="prayerTimes">
+                <!-- Diisi via JS -->
+            </div>
+        </aside>
+
+        <!-- Center: Video/Slideshow -->
+        <section class="center-panel">
+            <div id="mediaContainer" class="media-container">
+                <!-- Diisi via JS (Youtube atau Gambar) -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer: Running Text -->
+    <footer>
+        <div class="running-text" id="runningText1">Selamat datang di Masjid kami. Mohon jaga kebersihan dan ketertiban.</div>
+        <div class="running-text" id="runningText2" style="margin-top: 10px; font-size: 0.9em;">Pengumuman: Penyelenggaraan Majelis Ta'lim setiap ba'da Maghrib.</div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
