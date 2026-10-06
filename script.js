@@ -4,6 +4,25 @@ let audioUnlocked = false;
 let audioTriggered = {}; 
 
 document.addEventListener('DOMContentLoaded', () => {
+    // CEK LINK ADMIN: Jika ada parameter ?settings= di link, artinya admin mengirim data
+    const urlParams = new URLSearchParams(window.location.search);
+    const settingsParam = urlParams.get('settings');
+    
+    if (settingsParam) {
+        try {
+            // Decode link menjadi data JSON
+            let decoded = settingsParam.replace(/-/g, '+').replace(/_/g, '/');
+            while (decoded.length % 4) decoded += '=';
+            const parsed = JSON.parse(atob(decoded));
+            // Simpan ke memori TV/HP ini
+            localStorage.setItem('masjidSettings', JSON.stringify(parsed));
+            // Hapus parameter link agar tidak menyimpan ulang terus menerus
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } catch(e) {
+            console.error("Gagal parse settings dari link", e);
+        }
+    }
+
     loadDisplay();
     setInterval(updateClock, 1000);
     setInterval(updateDate, 1000);
@@ -32,7 +51,6 @@ function unlockAudio() {
 function getYouTubeEmbedUrl(url) {
     if (!url) return "";
     url = url.trim();
-    
     let videoId = null;
 
     if (url.includes('channel/') && url.includes('/live')) {
@@ -57,15 +75,13 @@ function getYouTubeEmbedUrl(url) {
     if (!videoId) {
         const regExp = /(?:v=|be\/|\/live\/|\/embed\/)([^"&?\/\s]{11})/;
         const match = url.match(regExp);
-        if (match && match[1].length === 11) {
-            videoId = match[1];
-        }
+        if (match && match[1].length === 11) videoId = match[1];
     }
 
     if (videoId && videoId.length === 11) {
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1&rel=0`;
+        // TAMBAH LOOP & PLAYLIST agar video muter terus
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1&rel=0&loop=1&playlist=${videoId}`;
     }
-    
     return ""; 
 }
 
@@ -73,16 +89,13 @@ function loadDisplay() {
     const data = JSON.parse(localStorage.getItem('masjidSettings')) || defaultSettings();
     const c = data.colors;
     
-    // LOGIKA BACKGROUND BARU
     if (data.backgroundUrl) {
-        // Jika ada link wallpaper, gunakan gambar + layer gelap
         document.body.style.background = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${data.backgroundUrl}')`;
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.backgroundAttachment = 'fixed';
     } else {
-        // Jika tidak ada link, gunakan warna solid yang dipilih
         document.body.style.background = c.mainBg || '#111111';
     }
 
@@ -219,7 +232,7 @@ function defaultSettings() {
         tartilMinutes: 5,
         prayerTimes: { imsak:"04:00", subuh:"04:15", terbit:"05:30", dzuhur:"12:00", ashar:"15:00", maghrib:"18:00", isya:"19:00" },
         colors: {
-            mainBg: "#111111", // Default solid black/dark
+            mainBg: "#111111",
             headerBg:"#1e3c72", headerText:"#ffffff", leftText:"#ffffff",
             imsakBg:"#0f2027", subuhBg:"#203a43", terbitBg:"#2c5364", dzuhurBg:"#0f9b0f", asharBg:"#8e2de2", maghribBg:"#4b6cb7", isyaBg:"#e65c00",
             text1Bg:"#000000", text1Color:"#ffd700", text2Bg:"#1a1a1a", text2Color:"#ffffff"
