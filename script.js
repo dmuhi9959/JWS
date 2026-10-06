@@ -7,6 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateDate, 1000);
 });
 
+// Fungsi untuk memotong Link YouTube menjadi ID
+function extractYouTubeId(url) {
+    if (!url) return "";
+    // Jika user mengetik ID 11 karakter langsung
+    if (url.length === 11) return url;
+    
+    const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regExp);
+    return (match && match[1].length === 11) ? match[1] : url;
+}
+
 function loadDisplay() {
     const data = JSON.parse(localStorage.getItem('masjidSettings')) || defaultSettings();
     const c = data.colors;
@@ -17,21 +28,19 @@ function loadDisplay() {
     document.getElementById('runningText1').innerHTML = '<span>' + data.text1 + '</span>';
     document.getElementById('runningText2').innerHTML = '<span>' + data.text2 + '</span>';
 
-    // Update Warna Header
+    // Update Warna
     document.getElementById('header').style.background = c.headerBg;
     document.getElementById('header').style.color = c.headerText;
 
-    // Update Warna Jam
     document.getElementById('clock').style.background = c.clockBg;
     document.getElementById('clock').style.color = c.leftText;
 
-    // Update Warna Running Text
     document.getElementById('runningText1Block').style.background = c.text1Bg;
     document.getElementById('runningText1').style.color = c.text1Color;
     document.getElementById('runningText2Block').style.background = c.text2Bg;
     document.getElementById('runningText2').style.color = c.text2Color;
 
-    // Update Prayer Times (Blok Terpisah)
+    // Update Prayer Times
     const pt = data.prayerTimes;
     document.getElementById('prayerTimes').innerHTML = `
         <div class="prayer-block" style="background:${c.imsakBg}; color:${c.leftText}">
@@ -54,11 +63,12 @@ function loadDisplay() {
         </div>
     `;
 
-    // Update Media
+    // Update Media (Support Link YouTube)
     const container = document.getElementById('mediaContainer');
     container.innerHTML = '';
-    if (data.mediaType === 'youtube' && data.youtubeId) {
-        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${data.youtubeId}?autoplay=1&mute=1&loop=1&playlist=${data.youtubeId}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    if (data.mediaType === 'youtube' && data.youtubeLink) {
+        const videoId = extractYouTubeId(data.youtubeLink);
+        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
         clearInterval(slideInterval);
     } else if (data.mediaType === 'slideshow' && data.slides) {
         const images = data.slides.split(',').map(url => url.trim());
@@ -106,7 +116,7 @@ function defaultSettings() {
         mosqueName: "Masjid Raya Al-Muhajirin",
         mosqueAddress: "Banten",
         mediaType: "youtube",
-        youtubeId: "C8kOruMftPo",
+        youtubeLink: "https://www.youtube.com/watch?v=C8kOruMftPo", // Default Link
         slides: "",
         text1: "Selamat datang di masjid kami.",
         text2: "Jadwal kajian setiap ba'da maghrib.",
