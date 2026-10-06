@@ -29,6 +29,56 @@ function unlockAudio() {
     a.play().then(() => { a.pause(); });
 }
 
+// FUNGSI BARU: Extract ID dari SEMUA format link YouTube
+function getYouTubeEmbedUrl(url) {
+    if (!url) return "";
+    url = url.trim();
+    
+    let videoId = null;
+
+    // 1. Cek format youtu.be/ID
+    if (url.includes('youtu.be/')) {
+        videoId = url.split('youtu.be/')[1].split(/[?&/]/)[0];
+    }
+    // 2. Cek format watch?v=ID
+    else if (url.includes('watch?v=')) {
+        videoId = url.split('watch?v=')[1].split(/[&]/)[0];
+    }
+    // 3. Cek format /live/ID (Seperti link yang Anda kirim)
+    else if (url.includes('/live/')) {
+        videoId = url.split('/live/')[1].split(/[?&/]/)[0];
+    }
+    // 4. Cek format /embed/ID
+    else if (url.includes('embed/')) {
+        videoId = url.split('embed/')[1].split(/[?&/]/)[0];
+    }
+    // 5. Jika user mengetik ID 11 karakter langsung
+    else if (url.length === 11) {
+        videoId = url;
+    }
+    // 6. Cek format channel/UCxxxx/live (Live 24 Jam)
+    else if (url.includes('channel/') && url.includes('/live')) {
+        const match = url.match(/channel\/(UC[A-Za-z0-9_-]+)/);
+        if (match && match[1]) {
+            return `https://www.youtube.com/embed/live_stream?channel=${match[1]}&autoplay=1&mute=0`;
+        }
+    }
+
+    // Jika ID berhasil ditemukan (biasanya 11 karakter)
+    if (videoId && videoId.length === 11) {
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1&rel=0`;
+    }
+    
+    // Fallback pakai regex jika semua gagal
+    const regExp = /(?:v=|be\/|\/live\/|\/embed\/)([^"&?\/\s]{11})/;
+    const match = url.match(regExp);
+    if (match && match[1].length === 11) {
+        return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=0&playsinline=1&rel=0`;
+    }
+
+    return ""; // Kembalikan kosong jika tidak valid
+}
+
 function loadDisplay() {
     const data = JSON.parse(localStorage.getItem('masjidSettings')) || defaultSettings();
     const c = data.colors;
@@ -67,30 +117,9 @@ function loadDisplay() {
     container.innerHTML = '';
     
     if (data.mediaType === 'youtube' && data.youtubeLink) {
-        let embedUrl = "";
-        let url = data.youtubeLink;
-
-        // LOGICA BARU UNTUK LIVE STREAM
-        if (url.includes('/live') && url.includes('channel/')) {
-            // Contoh link: https://www.youtube.com/channel/UCxxxx/live
-            const match = url.match(/channel\/(UC[A-Za-z0-9_-]+)/);
-            if (match && match[1]) {
-                embedUrl = `https://www.youtube.com/embed/live_stream?channel=${match[1]}&autoplay=1&mute=0`;
-            }
-        } else {
-            // Untuk Link Video Biasa atau Live ID
-            let videoId = "";
-            if (url.length === 11) videoId = url;
-            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-            const match = url.match(regExp);
-            if (match && match[1].length === 11) videoId = match[1];
-            
-            if (videoId) {
-                // Hapus loop & playlist agar Live Stream tidak error
-                embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1`;
-            }
-        }
-
+        // Gunakan fungsi extract yang baru
+        const embedUrl = getYouTubeEmbedUrl(data.youtubeLink);
+        
         if (embedUrl) {
             container.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
         }
@@ -188,7 +217,7 @@ function defaultSettings() {
         mosqueAddress: "Banten",
         backgroundUrl: "",
         mediaType: "youtube",
-        youtubeLink: "https://www.youtube.com/watch?v=C8kOruMftPo",
+        youtubeLink: "https://www.youtube.com/live/LauWgjH9zog",
         slides: "",
         text1: "Selamat datang di masjid kami.",
         text2: "Jadwal kajian setiap ba'da maghrib.",
