@@ -31,8 +31,9 @@
             <option value="youtube">YouTube</option>
             <option value="slideshow">Slideshow Gambar</option>
         </select>
-        <label>ID Video YouTube (Contoh: dQw4w9WgXcQ):</label>
-        <input type="text" id="setYoutubeId" placeholder="Hanya ID, bukan link full">
+        <!-- PERUBAYAN DI SINI: Menerima Link Full -->
+        <label>Link Video YouTube (Contoh: https://www.youtube.com/watch?v=xxxxx):</label>
+        <input type="text" id="setYoutubeLink" placeholder="Masukkan link YouTube">
         <label>URL Gambar Slideshow (Pisahkan dengan koma, maks 5):</label>
         <input type="text" id="setSlides" placeholder="https://.../1.jpg, https://.../2.jpg">
 
@@ -83,7 +84,7 @@
             document.getElementById('setMosqueName').value = data.mosqueName || 'Masjid Raya Al-Muhajirin';
             document.getElementById('setMosqueAddress').value = data.mosqueAddress || 'Jl. Contoh Alamat No. 123';
             document.getElementById('setMediaType').value = data.mediaType || 'youtube';
-            document.getElementById('setYoutubeId').value = data.youtubeId || '';
+            document.getElementById('setYoutubeLink').value = data.youtubeLink || ''; // Diubah ke Link
             document.getElementById('setSlides').value = data.slides || '';
             document.getElementById('setText1').value = data.text1 || 'Selamat datang di Masjid kami.';
             document.getElementById('setText2').value = data.text2 || 'Pengumuman: Majelis Ta\'lim ba\'da Maghrib.';
@@ -118,7 +119,7 @@
                 mosqueName: document.getElementById('setMosqueName').value,
                 mosqueAddress: document.getElementById('setMosqueAddress').value,
                 mediaType: document.getElementById('setMediaType').value,
-                youtubeId: document.getElementById('setYoutubeId').value,
+                youtubeLink: document.getElementById('setYoutubeLink').value, // Simpan Link
                 slides: document.getElementById('setSlides').value,
                 text1: document.getElementById('setText1').value,
                 text2: document.getElementById('setText2').value,
