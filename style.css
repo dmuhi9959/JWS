@@ -1,10 +1,9 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-/* FIX MOBILE: Pakai 100dvh agar pas di browser HP */
+/* FIX MOBILE & BACKGROUND */
 html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
 body { 
-    height: 100vh; /* Fallback */
-    height: 100dvh; /* Dynamic Viewport Height untuk HP */
+    height: 100vh; height: 100dvh;
     background-color: #111; 
     color: white; 
     overflow: hidden; 
@@ -13,15 +12,23 @@ body {
     background-size: cover; 
     background-position: center; 
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-/* Layer Gelap */
+/* HAPUS LAYER GELAP PEKAT, ganti dengan layer tipis agar teks terbaca */
 body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.75);
-    z-index: -1;
+    background: rgba(0, 0, 0, 0.4); /* Hanya 40% gelap, wallpaper akan terlihat */
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Pastikan konten ada di atas layer gelap */
+header, main, footer, #audioUnlock {
+    position: relative;
+    z-index: 1;
 }
 
 /* Tombol Unlock */
@@ -47,7 +54,7 @@ main { flex: 1; display: flex; padding: 10px 30px; gap: 20px; min-height: 0; ove
 
 /* Video */
 .center-panel { flex: 1; display: flex; justify-content: center; align-items: center; height: 100%; }
-.media-container { width: 80%; height: 90%; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.media-container { width: 80%; height: 90%; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); background: #000; z-index: 1; }
 .media-container iframe, .media-container img { width: 100%; height: 100%; object-fit: cover; }
 
 /* Footer */
