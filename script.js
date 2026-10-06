@@ -29,14 +29,12 @@ function unlockAudio() {
     a.play().then(() => { a.pause(); });
 }
 
-// FUNGSI EKSTRAKSI YOUTUBE YANG SANGAT AMPUH
 function getYouTubeEmbedUrl(url) {
     if (!url) return "";
     url = url.trim();
     
     let videoId = null;
 
-    // Cek format channel live 24 jam
     if (url.includes('channel/') && url.includes('/live')) {
         const match = url.match(/channel\/(UC[A-Za-z0-9_-]+)/);
         if (match && match[1]) {
@@ -44,7 +42,6 @@ function getYouTubeEmbedUrl(url) {
         }
     }
     
-    // Cek berbagai format link
     if (url.includes('youtu.be/')) {
         videoId = url.split('youtu.be/')[1].split(/[?&/]/)[0];
     } else if (url.includes('watch?v=')) {
@@ -57,7 +54,6 @@ function getYouTubeEmbedUrl(url) {
         videoId = url;
     }
 
-    // Fallback pakai Regex jika split gagal
     if (!videoId) {
         const regExp = /(?:v=|be\/|\/live\/|\/embed\/)([^"&?\/\s]{11})/;
         const match = url.match(regExp);
@@ -66,7 +62,6 @@ function getYouTubeEmbedUrl(url) {
         }
     }
 
-    // Pastikan ID 11 karakter (standar YouTube)
     if (videoId && videoId.length === 11) {
         return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1&rel=0`;
     }
@@ -78,15 +73,17 @@ function loadDisplay() {
     const data = JSON.parse(localStorage.getItem('masjidSettings')) || defaultSettings();
     const c = data.colors;
     
-    // PERBAIKAN BACKGROUND: Langsung pakai linear-gradient agar ada layer gelapnya
+    // LOGIKA BACKGROUND BARU
     if (data.backgroundUrl) {
+        // Jika ada link wallpaper, gunakan gambar + layer gelap
         document.body.style.background = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${data.backgroundUrl}')`;
         document.body.style.backgroundSize = 'cover';
         document.body.style.backgroundPosition = 'center';
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.backgroundAttachment = 'fixed';
     } else {
-        document.body.style.background = '#111';
+        // Jika tidak ada link, gunakan warna solid yang dipilih
+        document.body.style.background = c.mainBg || '#111111';
     }
 
     document.getElementById('mosqueName').innerText = data.mosqueName;
@@ -222,6 +219,7 @@ function defaultSettings() {
         tartilMinutes: 5,
         prayerTimes: { imsak:"04:00", subuh:"04:15", terbit:"05:30", dzuhur:"12:00", ashar:"15:00", maghrib:"18:00", isya:"19:00" },
         colors: {
+            mainBg: "#111111", // Default solid black/dark
             headerBg:"#1e3c72", headerText:"#ffffff", leftText:"#ffffff",
             imsakBg:"#0f2027", subuhBg:"#203a43", terbitBg:"#2c5364", dzuhurBg:"#0f9b0f", asharBg:"#8e2de2", maghribBg:"#4b6cb7", isyaBg:"#e65c00",
             text1Bg:"#000000", text1Color:"#ffd700", text2Bg:"#1a1a1a", text2Color:"#ffffff"
