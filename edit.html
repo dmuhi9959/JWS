@@ -15,15 +15,19 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .color-box { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 8px 12px; border-radius: 6px; border: 1px solid #eee; }
         .color-box input[type="color"] { width: 50px; height: 35px; border: none; cursor: pointer; background: none; }
-        button { width: 100%; padding: 15px; background: #28a745; color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 30px; transition: 0.2s; }
-        button:hover { background: #218838; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 6px; font-size: 1.2em; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .btn-save { background: #28a745; color: white; }
+        .btn-save:hover { background: #218838; }
+        .btn-link { background: #ffc107; color: #333; }
+        .btn-link:hover { background: #e0a800; }
         .note { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 0.9em; text-align: center; }
         a { display: inline-block; margin-bottom: 20px; color: #2a5298; text-decoration: none; font-weight: bold; }
+        textarea { width: 100%; height: 120px; margin-top: 10px; font-size: 0.8em; padding: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>⚙️ Pengaturan Display Masjid</h2>
+        <h2>⚙️ Admin Pengaturan Display</h2>
         <a href="index.html" target="_blank">👉 Lihat Display</a>
 
         <h3>Info Masjid & Background</h3>
@@ -31,18 +35,17 @@
         <input type="text" id="setMosqueName">
         <label>Alamat:</label>
         <input type="text" id="setMosqueAddress">
-        
         <label>URL Wallpaper (Kosongkan jika ingin pakai Warna Solid di bawah):</label>
         <input type="text" id="setBackgroundUrl" placeholder="https://.../bg.jpg">
         <div class="color-box" style="margin-top: 10px;">
-            <label>Warna Background Solid (Pilih warna gelap)</label>
+            <label>Warna Background Solid</label>
             <input type="color" id="cMainBg" value="#111111">
         </div>
 
         <h3>Media</h3>
         <label>Tipe Media:</label>
         <select id="setMediaType">
-            <option value="youtube">YouTube (Bersuara)</option>
+            <option value="youtube">YouTube</option>
             <option value="slideshow">Slideshow Gambar</option>
         </select>
         <label>Link Video YouTube:</label>
@@ -94,7 +97,13 @@
             <div class="color-box"><label>Huruf Text 2</label><input type="color" id="cText2Color" value="#ffffff"></div>
         </div>
 
-        <button onclick="saveSettings()">SIMPAN PENGATURAN</button>
+        <!-- TOMBOL SIMPAN -->
+        <button class="btn-save" onclick="saveSettings()">💾 SIMPAN PENGATURAN</button>
+        
+        <!-- TOMBOL BUAT LINK -->
+        <button class="btn-link" onclick="generateLink()">🔗 BUAT LINK DISPLAY (UNTUK TV/HP)</button>
+        <textarea id="shareLink" readonly style="display:none;"></textarea>
+
     </div>
 
     <script>
@@ -120,7 +129,7 @@
             document.getElementById('tIsya').value = pt.isya || '19:00';
 
             const c = data.colors || {};
-            document.getElementById('cMainBg').value = c.mainBg || '#111111'; // WARNA BG UTAMA
+            document.getElementById('cMainBg').value = c.mainBg || '#111111';
             document.getElementById('cHeaderBg').value = c.headerBg || '#1e3c72';
             document.getElementById('cHeaderText').value = c.headerText || '#ffffff';
             document.getElementById('cImsakBg').value = c.imsakBg || '#0f2027';
@@ -137,8 +146,8 @@
             document.getElementById('cLeftText').value = c.leftText || '#ffffff';
         }
 
-        function saveSettings() {
-            const data = {
+        function getSettingsObj() {
+            return {
                 mosqueName: document.getElementById('setMosqueName').value,
                 mosqueAddress: document.getElementById('setMosqueAddress').value,
                 backgroundUrl: document.getElementById('setBackgroundUrl').value,
@@ -158,7 +167,7 @@
                     isya: document.getElementById('tIsya').value
                 },
                 colors: {
-                    mainBg: document.getElementById('cMainBg').value, // SIMPAN WARNA BG UTAMA
+                    mainBg: document.getElementById('cMainBg').value,
                     headerBg: document.getElementById('cHeaderBg').value,
                     headerText: document.getElementById('cHeaderText').value,
                     imsakBg: document.getElementById('cImsakBg').value,
@@ -175,10 +184,34 @@
                     leftText: document.getElementById('cLeftText').value
                 }
             };
-            localStorage.setItem('masjidSettings', JSON.stringify(data));
+        }
+
+        function saveSettings() {
+            localStorage.setItem('masjidSettings', JSON.stringify(getSettingsObj()));
             alert('Pengaturan tersimpan!');
             window.open('index.html', '_blank');
         }
+
+        // FUNGSI BUAT LINK
+        function generateLink() {
+            const data = getSettingsObj();
+            // Encode ke Base64
+            let encoded = btoa(JSON.stringify(data));
+            encoded = encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            
+            // Buat Link
+            const currentUrl = window.location.href.split('?')[0].replace('edit.html', '');
+            const link = `${currentUrl}index.html?settings=${encoded}`;
+            
+            const txtArea = document.getElementById('shareLink');
+            txtArea.value = link;
+            txtArea.style.display = 'block';
+            txtArea.select();
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link Display sudah dibuat & disalin ke clipboard! \n\nSilakan buka link tersebut di HP/TV Masjid. Pengaturan Anda akan otomatis tersalin ke perangkat tersebut.');
+            });
+        }
+
         loadSettings();
     </script>
 </body>
