@@ -21,10 +21,10 @@
 
     <!-- Main Content -->
     <main>
-        <!-- Left Side: Clock & Prayer Times -->
+        <!-- Left Side: Clock & Prayer Times (Blok Terpisah) -->
         <aside class="left-panel">
-            <div id="clock" class="clock">00:00:00</div>
-            <div class="prayer-times" id="prayerTimes">
+            <div id="clock" class="block clock-block">00:00:00</div>
+            <div class="prayer-container" id="prayerTimes">
                 <!-- Diisi via JS -->
             </div>
         </aside>
@@ -37,10 +37,14 @@
         </section>
     </main>
 
-    <!-- Footer: Running Text -->
+    <!-- Footer: Running Text (Blok Terpisah) -->
     <footer>
-        <div class="running-text" id="runningText1">Selamat datang di Masjid kami. Mohon jaga kebersihan dan ketertiban.</div>
-        <div class="running-text" id="runningText2" style="margin-top: 10px; font-size: 0.9em;">Pengumuman: Penyelenggaraan Majelis Ta'lim setiap ba'da Maghrib.</div>
+        <div class="running-block" id="runningText1Block">
+            <div class="running-text" id="runningText1"><span>Selamat datang di Masjid kami.</span></div>
+        </div>
+        <div class="running-block" id="runningText2Block">
+            <div class="running-text" id="runningText2"><span>Pengumuman: Penyelenggaraan Majelis Ta'lim setiap ba'da Maghrib.</span></div>
+        </div>
     </footer>
 
     <script src="script.js"></script>
