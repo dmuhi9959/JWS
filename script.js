@@ -1,41 +1,49 @@
 let slideIndex = 0;
 let slideInterval;
 let audioUnlocked = false;
-let audioTriggered = {}; // Penanda agar tidak diputar dobel
+let audioTriggered = {}; 
 
 document.addEventListener('DOMContentLoaded', () => {
     loadDisplay();
     setInterval(updateClock, 1000);
-    setInterval(checkSchedule, 1000); // Cek jadwal adzan/tartil
+    setInterval(updateDate, 1000);
+    setInterval(checkSchedule, 1000);
 });
 
 function unlockAudio() {
     audioUnlocked = true;
     document.getElementById('audioUnlock').style.display = 'none';
-    // Putar audio kosong untuk bypass browser block
+    
+    let elem = document.documentElement;
+    let requestFullscreen = elem.requestFullscreen || elem.webkitRequestFullscreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
+    
+    if (requestFullscreen) {
+        requestFullscreen.call(elem).then(() => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(e => console.log("Lock orientasi gagal:", e));
+            }
+        }).catch(e => console.log("Fullscreen gagal:", e));
+    }
+
     let a = document.getElementById('audioPlayer');
     a.play().then(() => { a.pause(); });
-}
-
-function extractYouTubeId(url) {
-    if (!url) return "";
-    if (url.length === 11) return url;
-    const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-    const match = url.match(regExp);
-    return (match && match[1].length === 11) ? match[1] : url;
 }
 
 function loadDisplay() {
     const data = JSON.parse(localStorage.getItem('masjidSettings')) || defaultSettings();
     const c = data.colors;
     
-    // Update Teks
+    if (data.backgroundUrl) {
+        document.body.style.backgroundImage = `url('${data.backgroundUrl}')`;
+    } else {
+        document.body.style.backgroundImage = 'none';
+    }
+
     document.getElementById('mosqueName').innerText = data.mosqueName;
     document.getElementById('mosqueAddress').innerText = data.mosqueAddress;
     document.getElementById('runningText1').innerHTML = '<span>' + data.text1 + '</span>';
     document.getElementById('runningText2').innerHTML = '<span>' + data.text2 + '</span>';
 
-    // Update Warna
     document.getElementById('header').style.background = c.headerBg;
     document.getElementById('header').style.color = c.headerText;
 
@@ -44,7 +52,6 @@ function loadDisplay() {
     document.getElementById('runningText2Block').style.background = c.text2Bg;
     document.getElementById('runningText2').style.color = c.text2Color;
 
-    // Update Prayer Times (+ Terbit)
     const pt = data.prayerTimes;
     document.getElementById('prayerTimes').innerHTML = `
         <div class="prayer-block" style="background:${c.imsakBg}; color:${c.leftText}"><span>Imsak</span><span>${pt.imsak}</span></div>
@@ -56,13 +63,37 @@ function loadDisplay() {
         <div class="prayer-block" style="background:${c.isyaBg}; color:${c.leftText}"><span>Isya</span><span>${pt.isya}</span></div>
     `;
 
-    // Update Media (Unmute)
     const container = document.getElementById('mediaContainer');
     container.innerHTML = '';
+    
     if (data.mediaType === 'youtube' && data.youtubeLink) {
-        const videoId = extractYouTubeId(data.youtubeLink);
-        // mute=1 diganti mute=0 agar bersuara
-        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+        let embedUrl = "";
+        let url = data.youtubeLink;
+
+        // LOGICA BARU UNTUK LIVE STREAM
+        if (url.includes('/live') && url.includes('channel/')) {
+            // Contoh link: https://www.youtube.com/channel/UCxxxx/live
+            const match = url.match(/channel\/(UC[A-Za-z0-9_-]+)/);
+            if (match && match[1]) {
+                embedUrl = `https://www.youtube.com/embed/live_stream?channel=${match[1]}&autoplay=1&mute=0`;
+            }
+        } else {
+            // Untuk Link Video Biasa atau Live ID
+            let videoId = "";
+            if (url.length === 11) videoId = url;
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regExp);
+            if (match && match[1].length === 11) videoId = match[1];
+            
+            if (videoId) {
+                // Hapus loop & playlist agar Live Stream tidak error
+                embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1`;
+            }
+        }
+
+        if (embedUrl) {
+            container.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+        }
         clearInterval(slideInterval);
     } else if (data.mediaType === 'slideshow' && data.slides) {
         const images = data.slides.split(',').map(url => url.trim());
@@ -82,7 +113,6 @@ function checkSchedule() {
     const pt = data.prayerTimes;
     const tartilMin = data.tartilMinutes || 5;
     
-    // Jadwal Adzan (kecuali Imsak & Terbit)
     const prayers = [
         {name: 'Subuh', time: pt.subuh},
         {name: 'Dzuhur', time: pt.dzuhur},
@@ -94,7 +124,6 @@ function checkSchedule() {
     prayers.forEach(p => {
         if (!p.time) return;
         
-        // Hitung waktu tartil
         const [ph, pm] = p.time.split(':').map(Number);
         let totalMin = ph * 60 + pm - tartilMin;
         if (totalMin < 0) totalMin += 24 * 60;
@@ -102,16 +131,14 @@ function checkSchedule() {
         const tm = totalMin % 60;
         const tartilTime = `${String(th).padStart(2,'0')}:${String(tm).padStart(2,'0')}`;
 
-        // Trigger Tartil
         if (currentStr === tartilTime && s === '00' && !audioTriggered[p.name + '-tartil']) {
             audioTriggered[p.name + '-tartil'] = true;
-            playAudio('tartil.mp3'); // Pastikan file tartil.mp3 ada di github
+            playAudio('tartil.mp3'); 
         }
         
-        // Trigger Adzan
         if (currentStr === p.time && s === '00' && !audioTriggered[p.name + '-adzan']) {
             audioTriggered[p.name + '-adzan'] = true;
-            playAudio('adzan.mp3'); // Pastikan file adzan.mp3 ada di github
+            playAudio('adzan.mp3'); 
         }
     });
 }
@@ -155,14 +182,11 @@ function updateDate() {
     document.getElementById('gregDate').innerText = gregText;
 }
 
-// Jadwal Sholat dan Date
-setInterval(updateDate, 1000);
-updateDate();
-
 function defaultSettings() {
     return {
         mosqueName: "Masjid Raya Al-Muhajirin",
         mosqueAddress: "Banten",
+        backgroundUrl: "",
         mediaType: "youtube",
         youtubeLink: "https://www.youtube.com/watch?v=C8kOruMftPo",
         slides: "",
