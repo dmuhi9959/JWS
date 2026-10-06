@@ -29,64 +29,64 @@ function unlockAudio() {
     a.play().then(() => { a.pause(); });
 }
 
-// FUNGSI BARU: Extract ID dari SEMUA format link YouTube
+// FUNGSI EKSTRAKSI YOUTUBE YANG SANGAT AMPUH
 function getYouTubeEmbedUrl(url) {
     if (!url) return "";
     url = url.trim();
     
     let videoId = null;
 
-    // 1. Cek format youtu.be/ID
-    if (url.includes('youtu.be/')) {
-        videoId = url.split('youtu.be/')[1].split(/[?&/]/)[0];
-    }
-    // 2. Cek format watch?v=ID
-    else if (url.includes('watch?v=')) {
-        videoId = url.split('watch?v=')[1].split(/[&]/)[0];
-    }
-    // 3. Cek format /live/ID (Seperti link yang Anda kirim)
-    else if (url.includes('/live/')) {
-        videoId = url.split('/live/')[1].split(/[?&/]/)[0];
-    }
-    // 4. Cek format /embed/ID
-    else if (url.includes('embed/')) {
-        videoId = url.split('embed/')[1].split(/[?&/]/)[0];
-    }
-    // 5. Jika user mengetik ID 11 karakter langsung
-    else if (url.length === 11) {
-        videoId = url;
-    }
-    // 6. Cek format channel/UCxxxx/live (Live 24 Jam)
-    else if (url.includes('channel/') && url.includes('/live')) {
+    // Cek format channel live 24 jam
+    if (url.includes('channel/') && url.includes('/live')) {
         const match = url.match(/channel\/(UC[A-Za-z0-9_-]+)/);
         if (match && match[1]) {
             return `https://www.youtube.com/embed/live_stream?channel=${match[1]}&autoplay=1&mute=0`;
         }
     }
+    
+    // Cek berbagai format link
+    if (url.includes('youtu.be/')) {
+        videoId = url.split('youtu.be/')[1].split(/[?&/]/)[0];
+    } else if (url.includes('watch?v=')) {
+        videoId = url.split('watch?v=')[1].split(/[&]/)[0];
+    } else if (url.includes('/live/')) {
+        videoId = url.split('/live/')[1].split(/[?&/]/)[0];
+    } else if (url.includes('embed/')) {
+        videoId = url.split('embed/')[1].split(/[?&/]/)[0];
+    } else if (url.length === 11) {
+        videoId = url;
+    }
 
-    // Jika ID berhasil ditemukan (biasanya 11 karakter)
+    // Fallback pakai Regex jika split gagal
+    if (!videoId) {
+        const regExp = /(?:v=|be\/|\/live\/|\/embed\/)([^"&?\/\s]{11})/;
+        const match = url.match(regExp);
+        if (match && match[1].length === 11) {
+            videoId = match[1];
+        }
+    }
+
+    // Pastikan ID 11 karakter (standar YouTube)
     if (videoId && videoId.length === 11) {
         return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&playsinline=1&rel=0`;
     }
     
-    // Fallback pakai regex jika semua gagal
-    const regExp = /(?:v=|be\/|\/live\/|\/embed\/)([^"&?\/\s]{11})/;
-    const match = url.match(regExp);
-    if (match && match[1].length === 11) {
-        return `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=0&playsinline=1&rel=0`;
-    }
-
-    return ""; // Kembalikan kosong jika tidak valid
+    return ""; 
 }
 
 function loadDisplay() {
     const data = JSON.parse(localStorage.getItem('masjidSettings')) || defaultSettings();
     const c = data.colors;
     
+    // PERBAIKAN BACKGROUND: Langsung pakai linear-gradient agar ada layer gelapnya
     if (data.backgroundUrl) {
-        document.body.style.backgroundImage = `url('${data.backgroundUrl}')`;
+        document.body.style.background = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${data.backgroundUrl}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundAttachment = 'fixed';
     } else {
-        document.body.style.backgroundImage = 'none';
+        document.body.style.background = '#111';
     }
 
     document.getElementById('mosqueName').innerText = data.mosqueName;
@@ -117,9 +117,7 @@ function loadDisplay() {
     container.innerHTML = '';
     
     if (data.mediaType === 'youtube' && data.youtubeLink) {
-        // Gunakan fungsi extract yang baru
         const embedUrl = getYouTubeEmbedUrl(data.youtubeLink);
-        
         if (embedUrl) {
             container.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
         }
