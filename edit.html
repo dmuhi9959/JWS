@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengaturan Display</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input[type="text"], input[type="time"], input[type="color"], select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        button { margin-top: 20px; padding: 10px 15px; background: #1e3c72; color: white; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
+        button:hover { background: #2a5298; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Pengaturan Display Masjid</h2>
+        <a href="index.html" target="_blank">Lihat Display</a>
+
+        <h3>Info Masjid</h3>
+        <label>Nama Masjid:</label>
+        <input type="text" id="setMosqueName">
+        <label>Alamat:</label>
+        <input type="text" id="setMosqueAddress">
+
+        <h3>Media (Video/Gambar)</h3>
+        <label>Tipe Media:</label>
+        <select id="setMediaType">
+            <option value="youtube">YouTube</option>
+            <option value="slideshow">Slideshow Gambar</option>
+        </select>
+        <label>ID Video YouTube (Contoh: dQw4w9WgXcQ):</label>
+        <input type="text" id="setYoutubeId" placeholder="Hanya ID, bukan link full">
+        <label>URL Gambar Slideshow (Pisahkan dengan koma, maks 5):</label>
+        <input type="text" id="setSlides" placeholder="https://.../1.jpg, https://.../2.jpg">
+
+        <h3>Teks Berjalan (Running Text)</h3>
+        <label>Running Text 1:</label>
+        <input type="text" id="setText1">
+        <label>Running Text 2:</label>
+        <input type="text" id="setText2">
+
+        <h3>Waktu Sholat</h3>
+        <label>Imsak</label><input type="time" id="tImsak">
+        <label>Subuh</label><input type="time" id="tSubuh">
+        <label>Dzuhur</label><input type="time" id="tDzuhur">
+        <label>Ashar</label><input type="time" id="tAshar">
+        <label>Maghrib</label><input type="time" id="tMaghrib">
+        <label>Isya</label><input type="time" id="tIsya">
+
+        <h3>Warna</h3>
+        <label>Warna Background Blok Nama Masjid:</label>
+        <input type="color" id="cHeaderBg" value="#1e3c72">
+        <label>Warna Teks Nama Masjid:</label>
+        <input type="color" id="cHeaderText" value="#ffffff">
+        <label>Warna Background Jam & Waktu Sholat:</label>
+        <input type="color" id="cLeftBg" value="#2a5298">
+        <label>Warna Teks Jam & Waktu Sholat:</label>
+        <input type="color" id="cLeftText" value="#ffffff">
+        <label>Warna Background Running Text:</label>
+        <input type="color" id="cFooterBg" value="#000000">
+        <label>Warna Teks Running Text:</label>
+        <input type="color" id="cFooterText" value="#ffd700">
+
+        <button onclick="saveSettings()">SIMPAN PENGATURAN</button>
+    </div>
+
+    <script>
+        // Load existing settings
+        function loadSettings() {
+            const data = JSON.parse(localStorage.getItem('masjidSettings')) || {};
+            document.getElementById('setMosqueName').value = data.mosqueName || 'Masjid Raya Al-Muhajirin';
+            document.getElementById('setMosqueAddress').value = data.mosqueAddress || 'Jl. Contoh Alamat No. 123';
+            
+            document.getElementById('setMediaType').value = data.mediaType || 'youtube';
+            document.getElementById('setYoutubeId').value = data.youtubeId || '';
+            document.getElementById('setSlides').value = data.slides || '';
+            
+            document.getElementById('setText1').value = data.text1 || 'Selamat datang...';
+            document.getElementById('setText2').value = data.text2 || 'Pengumuman...';
+
+            const pt = data.prayerTimes || {};
+            document.getElementById('tImsak').value = pt.imsak || '04:00';
+            document.getElementById('tSubuh').value = pt.subuh || '04:15';
+            document.getElementById('tDzuhur').value = pt.dzuhur || '12:00';
+            document.getElementById('tAshar').value = pt.ashar || '15:00';
+            document.getElementById('tMaghrib').value = pt.maghrib || '18:00';
+            document.getElementById('tIsya').value = pt.isya || '19:00';
+
+            const c = data.colors || {};
+            document.getElementById('cHeaderBg').value = c.headerBg || '#1e3c72';
+            document.getElementById('cHeaderText').value = c.headerText || '#ffffff';
+            document.getElementById('cLeftBg').value = c.leftBg || '#2a5298';
+            document.getElementById('cLeftText').value = c.leftText || '#ffffff';
+            document.getElementById('cFooterBg').value = c.footerBg || '#000000';
+            document.getElementById('cFooterText').value = c.footerText || '#ffd700';
+        }
+
+        function saveSettings() {
+            const data = {
+                mosqueName: document.getElementById('setMosqueName').value,
+                mosqueAddress: document.getElementById('setMosqueAddress').value,
+                mediaType: document.getElementById('setMediaType').value,
+                youtubeId: document.getElementById('setYoutubeId').value,
+                slides: document.getElementById('setSlides').value,
+                text1: document.getElementById('setText1').value,
+                text2: document.getElementById('setText2').value,
+                prayerTimes: {
+                    imsak: document.getElementById('tImsak').value,
+                    subuh: document.getElementById('tSubuh').value,
+                    dzuhur: document.getElementById('tDzuhur').value,
+                    ashar: document.getElementById('tAshar').value,
+                    maghrib: document.getElementById('tMaghrib').value,
+                    isya: document.getElementById('tIsya').value
+                },
+                colors: {
+                    headerBg: document.getElementById('cHeaderBg').value,
+                    headerText: document.getElementById('cHeaderText').value,
+                    leftBg: document.getElementById('cLeftBg').value,
+                    leftText: document.getElementById('cLeftText').value,
+                    footerBg: document.getElementById('cFooterBg').value,
+                    footerText: document.getElementById('cFooterText').value
+                }
+            };
+            localStorage.setItem('masjidSettings', JSON.stringify(data));
+            alert('Pengaturan tersimpan! Silakan refresh halaman Display.');
+            window.open('index.html', '_blank'); // Otomatis buka display
+        }
+
+        loadSettings();
+    </script>
+</body>
+</html>
