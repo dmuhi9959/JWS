@@ -7,23 +7,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Tombol Unlock Suara (Hilang setelah diklik) -->
+    <div id="audioUnlock" onclick="unlockAudio()">🔊 Klik Layar Untuk Mengaktifkan Suara Adzan & Video</div>
+
     <!-- Header -->
     <header id="header">
+        <!-- Kiri: Tanggal -->
         <div class="header-left">
+            <div id="hijriDate"></div>
+            <div id="gregDate"></div>
+        </div>
+        <!-- Tengah: Nama Masjid -->
+        <div class="header-center">
             <h1 id="mosqueName">Masjid Raya Al-Muhajirin</h1>
             <p id="mosqueAddress">Jl. Contoh Alamat No. 123, Banten</p>
         </div>
+        <!-- Kanan: Jam Digital -->
         <div class="header-right">
-            <div id="hijriDate"></div>
-            <div id="gregDate"></div>
+            <div id="clock">00:00:00</div>
         </div>
     </header>
 
     <!-- Main Content -->
     <main>
-        <!-- Left Side: Clock & Prayer Times (Blok Terpisah) -->
+        <!-- Left Side: Prayer Times -->
         <aside class="left-panel">
-            <div id="clock" class="block clock-block">00:00:00</div>
             <div class="prayer-container" id="prayerTimes">
                 <!-- Diisi via JS -->
             </div>
@@ -32,7 +40,7 @@
         <!-- Center: Video/Slideshow -->
         <section class="center-panel">
             <div id="mediaContainer" class="media-container">
-                <!-- Diisi via JS (Youtube atau Gambar) -->
+                <!-- Diisi via JS -->
             </div>
         </section>
     </main>
@@ -43,9 +51,12 @@
             <div class="running-text" id="runningText1"><span>Selamat datang di Masjid kami.</span></div>
         </div>
         <div class="running-block" id="runningText2Block">
-            <div class="running-text" id="runningText2"><span>Pengumuman: Penyelenggaraan Majelis Ta'lim setiap ba'da Maghrib.</span></div>
+            <div class="running-text" id="runningText2"><span>Pengumuman: Majelis Ta'lim ba'da Maghrib.</span></div>
         </div>
     </footer>
+
+    <!-- Audio Elements -->
+    <audio id="audioPlayer" src=""></audio>
 
     <script src="script.js"></script>
 </body>
